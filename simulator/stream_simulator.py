@@ -8,7 +8,7 @@ import logging
 import os
 import random
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 import numpy as np
@@ -66,7 +66,7 @@ async def send_to_stream(
     msg = {
         b"asset_id":       asset_id.encode(),
         b"equipment_type": equipment_type.encode(),
-        b"timestamp":      datetime.now(datetime.UTC).isoformat().encode(),
+        b"timestamp":      datetime.now(timezone.utc).isoformat().encode(),
         b"features":       json.dumps(features).encode(),
     }
     msg_id = await r.xadd(stream_key, msg, maxlen=MAX_STREAM_LEN, approximate=True)

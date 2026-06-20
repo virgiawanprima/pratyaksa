@@ -24,6 +24,7 @@ import numpy as np
 import redis.asyncio as aioredis
 import xgboost as xgb
 from fastapi import Depends, FastAPI, HTTPException, Security
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import APIKeyHeader
 
 # Keras 3 Native Imports
@@ -350,8 +351,20 @@ async def _write_sensor_reading_to_db(reading: dict, features: list) -> None:
             VALUES ({', '.join(vals)})
             ON CONFLICT DO NOTHING
         """)
+
+        # Tangani timestamp yang mungkin berupa string ISO atau float epoch
+        ts_val = reading.get('timestamp', time.time())
+        if isinstance(ts_val, str):
+            from datetime import datetime
+            try:
+                ts_val = datetime.fromisoformat(ts_val).timestamp()
+            except ValueError:
+                ts_val = time.time()
+        else:
+            ts_val = float(ts_val)
+
         params = {
-            'ts': reading.get('timestamp', time.time()),
+            'ts': ts_val,
             'asset_id': reading['asset_id']
         }
         for i in range(32):
@@ -743,6 +756,14 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 Instrumentator().instrument(app).expose(app, endpoint="/metrics")
 
 
@@ -933,16 +954,35 @@ async def explain_prediction(prediction_id: str):
     data = json.loads(raw)
     features = data["features"]
 
-    # Gunakan cached explainer (R8)
     scaled = _scaler.transform(np.array(features).reshape(1, -1))
     shap_values = _shap_explainer.shap_values(scaled)
 
-    if isinstance(shap_values, list):
-        sv = shap_values[1][0]
-        base_val = _shap_explainer.expected_value[1] if isinstance(_shap_explainer.expected_value, list) else _shap_explainer.expected_value
+    # ── Tangani berbagai bentuk output SHAP ──
+    expected = _shap_explainer.expected_value
+
+    # Base value untuk kelas CRITICAL (indeks 2)
+    if isinstance(expected, (list, np.ndarray)):
+        base_val = float(expected[2]) if len(expected) > 2 else float(expected[1])
     else:
+        base_val = float(expected)
+
+    # SHAP values untuk kelas CRITICAL (indeks 2)
+    if isinstance(shap_values, list):
+        # SHAP < 0.46: list of arrays, masing-masing (n_samples, n_features)
+        sv = shap_values[2][0]
+    elif shap_values.ndim == 3:
+        # SHAP >= 0.46: (n_samples, n_features, n_classes)
+        sv = shap_values[0, :, 2]
+    elif shap_values.ndim == 2 and shap_values.shape[1] == 3:
+        # (n_features, n_classes) – sangat jarang
+        sv = shap_values[:, 2]
+    else:
+        # Binary: (n_features,)
         sv = shap_values[0]
-        base_val = _shap_explainer.expected_value
+
+    # Pastikan sv adalah array 1D (n_features,)
+    if sv.ndim > 1:
+        sv = sv.flatten()
 
     plt.figure(figsize=(10, 6))
     shap.waterfall_plot(
