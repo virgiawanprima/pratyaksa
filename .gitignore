@@ -81,5 +81,3 @@ Thumbs.db
 .idea/
 *.sublime-project
 *.sublime-workspace
-
-# VS Code Dev Containers (di-commit biar bisa dipake clone)
