@@ -31,7 +31,6 @@ Sistem AIoT Predictive dan Prescriptive Maintenance untuk Armada Alat Berat Tamb
 - [Arsitektur Sistem](#-arsitektur-sistem)
 - [Tech Stack](#-tech-stack)
 - [Cara Memulai (Quick Start)](#-cara-memulai-quick-start)
-- [Development Container](#-development-container)
 - [Daftar Service](#-daftar-service)
 - [Daftar Endpoint API](#-daftar-endpoint-api)
 - [Testing](#-testing)
@@ -267,25 +266,6 @@ docker compose down
 
 ---
 
-## 🐳 Development Container
-
-Buat development tanpa ribet permission NTFS / dependency conflict:
-
-1. Buka VS Code di folder proyek
-2. Kiri bawah klik icon `><` → **"Reopen in Container"**
-3. VS Code otomatis:
-   - Build image (Python 3.11 + TensorFlow, XGBoost, SHAP, dll pre-installed)
-   - Start semua services (Redis, Postgres, API, dll)
-   - Mount project folder ke `/workspace`
-   - Beri akses Docker CLI dari dalam container
-
-```bash
-# Semua command jalan normal di terminal VS Code:
-python test_core.py
-curl localhost:6000/health
-docker compose ps
-```
-
 ---
 
 ## 📡 Daftar Service
@@ -352,7 +332,6 @@ pratyaksa/
 ├── test_core.py                     # Unit test suite
 ├── test_load.py                     # Load test Keras model
 ├── requirements-dev.txt             # Dependencies development
-├── .devcontainer/                   # VS Code Dev Container config
 ├── artifacts/                       # Model artifacts
 │   ├── artifact_deploy_meta.json    # Metadata deployment
 │   ├── artifact_xgb_model.json      # XGBoost classifier
@@ -400,7 +379,7 @@ pratyaksa/
 │   ├── airflow/Dockerfile
 │   ├── simulator/Dockerfile
 │   ├── jupyter/Dockerfile
-│   └── dev/Dockerfile               # Dev container image
+│   
 └── data/
     ├── dataset_pratyaksa_pilot.parquet
     ├── dataset_pratyaksa_noisy.parquet
@@ -421,7 +400,6 @@ pratyaksa/
 | **Docker Compose** (semua service *one-command up*) | ✅ Selesai |
 | **Edge Device** (ONNX + buffer + MQTT) | ✅ Selesai |
 | **Digital Twin** (physics cross-check) | ✅ Selesai |
-| **Dev Container** (VS Code, all deps pre-installed) | ✅ Selesai |
 
 > **11 service** — seluruhnya dapat dijalankan dengan `docker compose up`.
 
