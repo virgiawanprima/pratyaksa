@@ -173,6 +173,7 @@ Telegram Bot | CMMS (2 arah)
 | Airflow Webserver | **6080** |
 | Prometheus | **6090** |
 | Mosquitto MQTT | **6883** |
+| Mosquitto WebSocket | **6884** |
 | Redis | **6379** |
 | PostgreSQL (TimescaleDB) | **5432** |
 
@@ -292,6 +293,7 @@ docker compose down
 |--------|------|:----:|-----------|
 | `GET` | `/health` | ✗ | *Health check* (Redis, Postgres, models) |
 | `GET` | `/metrics` | ✗ | Prometheus metrics |
+| `GET` | `/features` | API Key | Daftar 37 fitur sensor beserta grupnya |
 | `POST` | `/predict` | API Key | Prediksi tunggal — risk, RUL, *twin*, *drift* |
 | `GET` | `/explain/{prediction_id}` | API Key | SHAP *waterfall plot* (base64 PNG) |
 | `POST` | `/workorder` | API Key | Rekomendasi *work order* preskriptif |
@@ -340,7 +342,7 @@ pratyaksa/
 │   ├── artifact_lstm_{type}.keras   # 4 LSTM experts per tipe alat
 │   └── *.npy                        # Training arrays
 ├── api/                             # ☁️ Cloud Backend
-│   ├── app.py                       # FastAPI — 8 endpoints
+│   ├── app.py                       # FastAPI — 9 endpoints
 │   ├── prescriptive.py              # Recommendation engine
 │   └── requirements.txt             # Dependencies API
 ├── edge/                            # 📡 Edge Device
@@ -358,7 +360,12 @@ pratyaksa/
 │       └── pressure_transducer.py   # Pressure transducer
 ├── bot/                             # 🤖 Telegram Bot (backup)
 │   ├── bot.py                       # Telegram Bot (full, currently disabled)
-│   └── bot_simulator.py             # FastAPI alert sender
+│   ├── bot_simulator.py             # FastAPI alert sender
+│   └── docker-container/bot/Dockerfile
+├── mosquitto/                       # 📡 MQTT Broker config
+│   ├── config/
+│   ├── data/
+│   └── log/
 ├── simulator/                       # 🔄 Data Simulator
 │   └── stream_simulator.py          # Replay parquet → Redis
 ├── airflow/dags/                    # 🏭 MLOps Pipeline
@@ -366,7 +373,8 @@ pratyaksa/
 │   ├── data_quality_check.py        # Daily null check
 │   └── drift_detection.py           # Daily KS-test drift
 ├── monitoring/
-│   └── prometheus.yml               # Prometheus config
+│   ├── prometheus.yml               # Prometheus config
+│   └── grafana/                     # Grafana provisioning
 ├── database/
 │   └── schema.sql                   # TimescaleDB schema (320 lines)
 ├── notebooks/                       # 📓 Jupyter Notebooks
@@ -378,8 +386,11 @@ pratyaksa/
 │   ├── airflow/Dockerfile
 │   ├── simulator/Dockerfile
 │   ├── jupyter/Dockerfile
-│   
-└── data/
+│   └── bot/Dockerfile
+├── data/
+│   ├── dataset_pratyaksa_pilot.parquet
+│   ├── dataset_pratyaksa_noisy.parquet
+│   └── daily/                       # Airflow daily mount
     ├── dataset_pratyaksa_pilot.parquet
     ├── dataset_pratyaksa_noisy.parquet
     └── daily/                       # Airflow daily mount
