@@ -35,6 +35,8 @@ X-API-Key: dev-key-pratyaksa
 | Endpoint | Fungsi |
 |----------|--------|
 | `GET /health` | Cek koneksi & status server |
+| `GET /metrics` | Metrik Prometheus |
+| `GET /openapi.json` | Spek OpenAPI (untuk generate code) |
 
 ### GET — Perlu Auth
 
@@ -43,8 +45,7 @@ X-API-Key: dev-key-pratyaksa
 | `GET /features` | Daftar semua sensor (37 fitur) |
 | `GET /fleet` | Status real-time semua alat |
 | `GET /result/{asset_id}` | Detail prediksi per alat |
-| `GET /openapi.json` | Spek OpenAPI (untuk generate code) |
-| `GET /metrics` | Metrik Prometheus |
+| `GET /explain/{prediction_id}` | SHAP waterfall plot (base64 PNG) |
 
 ### POST — Perlu Auth
 
@@ -71,7 +72,7 @@ Response:
   "redis": "ok",
   "postgres": "ok",
   "experts_loaded": ["bulldozer","haul_truck","excavator","wheel_loader"],
-  "model_version": "2.0.0"
+  "model_version": "3.4.0"
 }
 ```
 
@@ -297,4 +298,4 @@ export const usePratyaksa = () => {
 
 ---
 
-> **PRATYAKSA v2.0.0** — AIoT Predictive Maintenance
+> **PRATYAKSA API v3.4** — AIoT Predictive Maintenance
