@@ -155,6 +155,7 @@ services:
       GF_UNIFIED_ALERTING_ENABLED: "true"
     volumes:
       - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana:/etc/grafana/provisioning:ro
     ports:
       - "6001:3000"
     networks:
