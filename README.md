@@ -36,6 +36,7 @@ Sistem AIoT Predictive dan Prescriptive Maintenance untuk Armada Alat Berat Tamb
 - [Testing](#-testing)
 - [Struktur Proyek](#-struktur-proyek)
 - [Status Prototipe](#-status-prototipe)
+- [Ekosistem PRATYAKSA](#-ekosistem-pratyaksa)
 - [Kontak](#-kontak)
 
 ---
@@ -174,8 +175,8 @@ Telegram Bot | CMMS (2 arah)
 | Prometheus | **6090** |
 | Mosquitto MQTT | **6883** |
 | Mosquitto WebSocket | **6884** |
-| Redis | **6379** |
-| PostgreSQL (TimescaleDB) | **5432** |
+| Redis (internal) | **6379** |
+| PostgreSQL / TimescaleDB (internal) | **5432** |
 
 ---
 
@@ -207,13 +208,13 @@ Telegram Bot | CMMS (2 arah)
 - Docker & Docker Compose
 - Python 3.11+ (untuk pengembangan *offline*)
 - Git
-- Port 6000, 6001, 6050, 6080, 6090, 6379, 5432, 6883 tersedia
+- Port 6000, 6001, 6050, 6080, 6090, 6883 tersedia
 
 ### 1. Clone Repository
 
 ```bash
-git clone https://github.com/virgiawanprima/pratyaksa.git
-cd pratyaksa
+git clone https://github.com/virgiawanprima/project-pratyaksa-kic.git
+cd project-pratyaksa-kic
 ```
 
 ### 2. Konfigurasi Environment
@@ -273,8 +274,8 @@ docker compose down
 
 | Service | Port | Deskripsi |
 |---------|:----:|-----------|
-| **pratyaksa-redis** | 6379 | Redis 8 — Streams, pub/sub, cache result (TTL 1h) |
-| **pratyaksa-postgres** | 5432 | TimescaleDB 16 — *Hypertable* sensor + prediction (*compress* 30d, *retain* 2y) |
+| **pratyaksa-redis** | 6379* | Redis 8 — Streams, pub/sub, cache result (TTL 1h) |
+| **pratyaksa-postgres** | 5432* | TimescaleDB 16 — *Hypertable* sensor + prediction (*compress* 30d, *retain* 2y) |
 | **pratyaksa-api** | 6000 | FastAPI — *Inference engine* (predict, explain, workorder, fleet, health) |
 | **pratyaksa-mlflow** | 6050 | MLflow 3.13 — *Experiment tracking* (Postgres backend) |
 | **pratyaksa-prometheus** | 6090 | Prometheus — *Metrics scraping* (30d *retention*) |
@@ -284,6 +285,8 @@ docker compose down
 | **pratyaksa-airflow-web** | 6080 | Airflow webserver — DAG UI |
 | **mosquitto** | 6883 | MQTT broker — *edge data ingestion* |
 | **pratyaksa-bridge** | — | MQTT→Redis bridge |
+
+> *\* — port internal Docker (tidak di-*expose* ke host)*
 
 ---
 
@@ -387,10 +390,7 @@ pratyaksa/
 │   ├── simulator/Dockerfile
 │   ├── jupyter/Dockerfile
 │   └── bot/Dockerfile
-├── data/
-│   ├── dataset_pratyaksa_pilot.parquet
-│   ├── dataset_pratyaksa_noisy.parquet
-│   └── daily/                       # Airflow daily mount
+└── data/
     ├── dataset_pratyaksa_pilot.parquet
     ├── dataset_pratyaksa_noisy.parquet
     └── daily/                       # Airflow daily mount
