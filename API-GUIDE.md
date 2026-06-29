@@ -18,7 +18,7 @@ Dokumen ini untuk **teman** yang ingin mengambil data prediktif maintenance dari
 
 ## 🔐 Autentikasi
 
-Semua endpoint **wajib** header `X-API-Key` **kecuali** `/health` dan `/metrics`.
+Semua endpoint **wajib** header `X-API-Key` **kecuali** `/health`, `/metrics`, `/docs`, dan `/openapi.json`.
 
 ```
 X-API-Key: dev-key-pratyaksa

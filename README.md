@@ -295,8 +295,8 @@ docker compose down
 | `POST` | `/predict` | API Key | Prediksi tunggal — risk, RUL, *twin*, *drift* |
 | `GET` | `/explain/{prediction_id}` | API Key | SHAP *waterfall plot* (base64 PNG) |
 | `POST` | `/workorder` | API Key | Rekomendasi *work order* preskriptif |
-| `GET` | `/result/{asset_id}` | ✗ | *Latest cached prediction* |
-| `GET` | `/fleet` | ✗ | *Fleet status* agregat |
+| `GET` | `/result/{asset_id}` | API Key | *Latest cached prediction* |
+| `GET` | `/fleet` | API Key | *Fleet status* agregat |
 | `POST` | `/reload-models` | API Key | *Hot-reload* model tanpa *downtime* |
 
 ---
@@ -324,7 +324,6 @@ python test_load.py
 ```
 pratyaksa/
 ├── docker-compose.yml               # Orkestrasi 11 service
-├── docker-compose.dev.yml           # Dev container override
 ├── .env.example                     # Template environment variables
 ├── schema_config.json               # Definisi 37 fitur sensor (4 grup)
 ├── bridge.py                        # MQTT → Redis Stream bridge
@@ -358,7 +357,7 @@ pratyaksa/
 │       ├── max6675.py               # Thermocouple
 │       └── pressure_transducer.py   # Pressure transducer
 ├── bot/                             # 🤖 Telegram Bot (backup)
-│   ├── bot.py                       # Bot source (preserved)
+│   ├── bot.py                       # Telegram Bot (full, currently disabled)
 │   └── bot_simulator.py             # FastAPI alert sender
 ├── simulator/                       # 🔄 Data Simulator
 │   └── stream_simulator.py          # Replay parquet → Redis
