@@ -219,7 +219,7 @@ cd pratyaksa
 
 ```bash
 cp .env.example .env
-# Edit .env — isi POSTGRES_PASSWORD, TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, PRATYAKSA_API_KEYS
+# Edit .env — isi POSTGRES_PASSWORD dan PRATYAKSA_API_KEYS
 ```
 
 ### 3. Jalankan Seluruh Stack
@@ -243,7 +243,7 @@ curl http://localhost:6000/health
 
 # Prediksi sample
 curl -X POST http://localhost:6000/predict \
-  -H "X-API-Key: dev-key-pratyaksa" \
+  -H "X-API-Key: YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"asset_id":"test-001","equipment_type":"haul_truck","features":[1.0]*37}'
 ```

@@ -18,7 +18,6 @@ from sklearn.model_selection import train_test_split
 # Airflow
 from airflow.decorators import dag, task
 from airflow.providers.postgres.hooks.postgres import PostgresHook
-from airflow.providers.telegram.operators.telegram import TelegramOperator
 from airflow.providers.http.operators.http import SimpleHttpOperator
 
 # Keras 3
@@ -205,16 +204,6 @@ def pratyaksa_retraining_pipeline():
         log_response=True,
     )
 
-    notify_success = TelegramOperator(
-        task_id="notify_telegram",
-        telegram_conn_id="pratyaksa_telegram_bot",
-        chat_id=os.getenv("TELEGRAM_CHAT_ID"),
-        text="✅ <b>[MLOps] Retraining Complete</b>\n\n"
-            "Model Version: {{ ti.xcom_pull(task_ids='deploy_and_swap_metadata') }}\n"
-            "Status: Deployed to Production 🚜💻",
-        parse_mode="HTML",
-    )
-
-    version >> trigger_hot_reload >> notify_success
+    version >> trigger_hot_reload
 
 pipeline = pratyaksa_retraining_pipeline()

@@ -81,11 +81,15 @@ logger = logging.getLogger("pratyaksa")
 
 # ---------- Auth ----------
 API_KEY_HEADER = APIKeyHeader(name="X-API-Key", auto_error=True)
-# AUDIT R2: hanya fallback jika ENV=development
-if os.getenv("ENV") == "development":
-    _VALID_KEYS = {"dev-key-pratyaksa"}
-else:
-    _VALID_KEYS = set(os.environ["PRATYAKSA_API_KEYS"].split(","))
+
+def _load_valid_keys() -> set:
+    raw = os.environ.get("PRATYAKSA_API_KEYS", "")
+    keys = {k.strip() for k in raw.split(",") if k.strip()}
+    if not keys:
+        raise RuntimeError("PRATYAKSA_API_KEYS tidak diset — atur via .env atau environment variable")
+    return keys
+
+_VALID_KEYS = _load_valid_keys()
 
 async def verify_api_key(api_key: str = Security(API_KEY_HEADER)) -> str:
     if api_key not in _VALID_KEYS:

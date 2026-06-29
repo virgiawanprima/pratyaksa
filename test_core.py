@@ -9,6 +9,7 @@ import numpy as np
 
 # Pastikan environment development terdeteksi
 os.environ.setdefault("ENV", "development")
+os.environ.setdefault("PRATYAKSA_API_KEYS", "test-key")
 
 # Tambahkan root proyek ke sys.path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))

@@ -2,6 +2,8 @@
 
 Dokumen ini untuk **teman** yang ingin mengambil data prediktif maintenance dari server PRATYAKSA. Tidak perlu clone repo — cukup akses via HTTP.
 
+> ⚠️ **Peringatan Keamanan:** API Key di dokumen ini hanya contoh. Ganti `YOUR_API_KEY` dengan key asli yang diberikan tim PRATYAKSA. Jangan sebarkan key produksi di kode publik.
+
 ---
 
 ## 📡 Koneksi Dasar
@@ -9,7 +11,7 @@ Dokumen ini untuk **teman** yang ingin mengambil data prediktif maintenance dari
 | Item | Nilai |
 |------|-------|
 | **API URL** | `http://192.168.1.90:6000` |
-| **API Key** | `dev-key-pratyaksa` |
+| **API Key** | `YOUR_API_KEY` |
 | **Header Auth** | `X-API-Key` |
 | **Interval Data** | Setiap **5 detik** (real-time) |
 | **Jumlah Asset** | 6 unit alat berat |
@@ -21,7 +23,7 @@ Dokumen ini untuk **teman** yang ingin mengambil data prediktif maintenance dari
 Semua endpoint **wajib** header `X-API-Key` **kecuali** `/health`, `/metrics`, `/docs`, dan `/openapi.json`.
 
 ```
-X-API-Key: dev-key-pratyaksa
+X-API-Key: YOUR_API_KEY
 ```
 
 > ⚠️ Jika lupa kirim header → response `401` / `403`.
@@ -82,7 +84,7 @@ Response:
 
 ```bash
 curl http://192.168.1.90:6000/fleet \
-  -H "X-API-Key: dev-key-pratyaksa"
+  -H "X-API-Key: YOUR_API_KEY"
 ```
 
 Response:
@@ -112,7 +114,7 @@ Response:
 
 ```bash
 curl http://192.168.1.90:6000/result/WA600-001 \
-  -H "X-API-Key: dev-key-pratyaksa"
+  -H "X-API-Key: YOUR_API_KEY"
 ```
 
 Asset ID yang tersedia:
@@ -131,7 +133,7 @@ Asset ID yang tersedia:
 
 ```bash
 curl -X POST http://192.168.1.90:6000/predict \
-  -H "X-API-Key: dev-key-pratyaksa" \
+  -H "X-API-Key: YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "asset_id": "DT-001",
@@ -149,7 +151,7 @@ curl -X POST http://192.168.1.90:6000/predict \
 
 ```bash
 curl -X POST "http://192.168.1.90:6000/workorder?component=brake&risk_score=0.85" \
-  -H "X-API-Key: dev-key-pratyaksa"
+  -H "X-API-Key: YOUR_API_KEY"
 ```
 
 Parameter:
@@ -162,7 +164,7 @@ Parameter:
 
 ```bash
 curl http://192.168.1.90:6000/features \
-  -H "X-API-Key: dev-key-pratyaksa"
+  -H "X-API-Key: YOUR_API_KEY"
 ```
 
 ---
@@ -171,7 +173,7 @@ curl http://192.168.1.90:6000/features \
 
 ```bash
 curl http://192.168.1.90:6000/openapi.json \
-  -H "X-API-Key: dev-key-pratyaksa"
+  -H "X-API-Key: YOUR_API_KEY"
 ```
 
 Bisa di-parse Rust dengan crate `progenitor` atau `openapi-generator`.
@@ -203,7 +205,7 @@ use tokio::time::{interval, Duration};
 use std::collections::HashMap;
 
 const URL: &str = "http://192.168.1.90:6000";
-const KEY: &str = "dev-key-pratyaksa";
+const KEY: &str = "YOUR_API_KEY";
 const HEADER: &str = "X-API-Key";
 
 async fn poll_fleet(client: &Client) -> Result<Value, reqwest::Error> {
@@ -282,7 +284,7 @@ export const usePratyaksa = () => {
 |--------|----------|--------|
 | `ERR_UNSAFE_PORT` | Browser blokir port 6000 | Pakai Firefox, atau ganti port API |
 | `Connection refused` | Server mati / beda jaringan | Cek `ping 192.168.1.90` |
-| `401 Unauthorized` | Header key salah/lupa | Kasih `-H "X-API-Key: dev-key-pratyaksa"` |
+| `401 Unauthorized` | Header key salah/lupa | Kasih `-H "X-API-Key: YOUR_API_KEY"` |
 | `curl: (3) URL rejected` | Terminal salah copy | Tulis dalam **satu baris**, jangan pakai `\` |
 | Timeout | Firewall / proxy | Cek `telnet 192.168.1.90 6000` |
 
@@ -292,7 +294,7 @@ export const usePratyaksa = () => {
 
 - [ ] Bisa `ping 192.168.1.90`
 - [ ] `curl http://192.168.1.90:6000/health` → `{"status":"ok"}`
-- [ ] `curl http://192.168.1.90:6000/fleet -H "X-API-Key: dev-key-pratyaksa"` → daftar asset
+- [ ] `curl http://192.168.1.90:6000/fleet -H "X-API-Key: YOUR_API_KEY"` → daftar asset
 - [ ] Buat Rust middleware polling tiap 5 detik
 - [ ] Nuxt.js ambil dari Rust, bukan langsung
 
