@@ -415,6 +415,29 @@ pratyaksa/
 
 ---
 
+## 🌐 Ekosistem PRATYAKSA
+
+Proyek PRATYAKSA terbagi menjadi dua repositori yang saling melengkapi:
+
+| Repositori | Tech Stack | Fungsi |
+|------------|------------|--------|
+| [**project-pratyaksa-kic**](https://github.com/virgiawanprima/project-pratyaksa-kic) *(ini)* | Python FastAPI, XGBoost, LSTM, ONNX, Redis, TimescaleDB | **AI/ML Inference Engine** — pemrosesan sensor, prediksi kerusakan, RUL, digital twin, SHAP explainability, MLOps (Airflow + MLflow) |
+| [**pratyaksa (b4its)**](https://github.com/b4its/pratyaksa) | Rust Actix-Web, Nuxt 4, PostgreSQL, MongoDB, Nginx | **Dashboard & CMMS** — frontend monitoring armada, peta sebaran unit, visualisasi 3D, manajemen work order, notifikasi Telegram |
+
+### Alur Data Lintas Repo
+
+```
+Sensor/Edge → FastAPI Inference (port 6000) → REST API → Rust Backend (port 8080) → Nuxt Dashboard (port 80)
+                                                  ↓
+                                           Telegram Bot (gRPC) → Notifikasi CRITICAL
+```
+
+Keduanya berjalan di atas **infrastruktur Docker bersama**:
+- Repo **AI Engine** menyediakan endpoint prediksi di port `6000–6999`
+- Repo **Dashboard** mengonsumsi data tersebut dan menyajikannya ke pengguna lewat Nginx di port `80`
+
+---
+
 ## 📬 Kontak
 
 **PRATYAKSA** dipersembahkan oleh Tim Oryphem untuk **Kideco Innovation Challenge (KIC) 2026**.
@@ -425,7 +448,8 @@ pratyaksa/
 | 🏆 **Kompetisi** | Kideco Innovation Challenge 2026 |
 | 👨‍💼 **Ketua Tim** | Baits Rika Saputra — brsaputra14@gmail.com |
 | 👨‍💻 **Kontak** | [Virgiawan Prima Rizky](https://www.linkedin.com/in/virgiawan-prima-rizky) |
-| 📂 **Repository** | [github.com/virgiawanprima/pratyaksa](https://github.com/virgiawanprima/pratyaksa) |
+| 📂 **Repository (AI Engine)** | [github.com/virgiawanprima/project-pratyaksa-kic](https://github.com/virgiawanprima/project-pratyaksa-kic) |
+| 📂 **Repository (Dashboard)** | [github.com/b4its/pratyaksa](https://github.com/b4its/pratyaksa) |
 
 ---
 
